@@ -1,0 +1,1528 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{soul}      % strikethrough (\st) support for pandoc >= 3.0.0
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{MCMC-homework-assignment}
+    
+    
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@ges}{\let\PY@bf=\textbf\let\PY@it=\textit}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{psi-numerical-methods-2024---homework-assignment-on-model-fitting-mcmc}{%
+\section{PSI Numerical Methods 2024 - Homework Assignment on Model
+Fitting \&
+MCMC}\label{psi-numerical-methods-2024---homework-assignment-on-model-fitting-mcmc}}
+
+    \hypertarget{code-available-here}{%
+\subsection{\texorpdfstring{Code available
+\href{https://github.com/JLGouws/PSI-Numerical-Methods-2024-MCMC-Homework1}{here}}{Code available here}}\label{code-available-here}}
+
+    We're going to put together everything we have learned so far to re-do
+the data analysis for the Perlmutter et al.~1999 paper on the discovery
+of dark energy!
+(https://ui.adsabs.harvard.edu/abs/1999ApJ\ldots517..565P/abstract)
+
+Start by \texttt{Forking} this repository on Github:
+https://github.com/dstndstn/PSI-Numerical-Methods-2024-MCMC-Homework And
+then clone the repository to your laptop or to Symmetry. You can modify
+this notebook, and when you are done, save it, and then
+\texttt{git\ commit\ -a} the results, and \texttt{git\ push} them back
+to your fork of the repository. You will ``hand in'' your homework by
+giving a link to your Github repository, where the marker will be able
+to read your notebook.
+
+First, a little bit of background on the cosmology and astrophysics. The
+paper reports measurements of a group of supernova explosions of a
+specific type, ``Type 1a''. These are thought to be caused by a white
+dwarf star that has a companion star that ``donates'' gas to the white
+dwarf. It gradually gains mass until it exceeds the Chandresekhar mass,
+and explodes. Since they all explode through the same mechanism, and
+with the same mass, they should all have the same intrinsic brightess.
+It turns out to be a \emph{little} more complicated than that, but in
+the end, these Type-1a supernovae can be turned into ``standard
+candles'', objects that are all the same brightness. If you can also
+measure the redshift of each galaxy containing the supernova, then you
+can map out this brightness--redshift relation, and the shape of that
+relation depends on how the universe grows over cosmic time. In turn,
+the growth rate of the universe depends on the contents of the universe!
+
+In this way, these Type-1a supernova allow us to constrain the
+parameters of a model of the universe. Specifically, the model is called
+``Lambda-CDM'', a universe containing dark energy and matter (cold dark
+matter, plus regular matter). We will consider a two-parameter version
+of this model: \(\Omega_M\), the amount of matter, and
+\(\Omega_{\Lambda}\), the amount of dark energy. These are in cosmology
+units of ``energy density now relative to the critical density'', where
+the critical density is the energy density you need for the universe to
+be spatially flat (angles of a large triangle sum to 180 degrees). So
+\(\Omega_M = 1\), \(\Omega_{\Lambda} = 0\) would be a flat universe
+containing all matter, while \(\Omega_M = 0.25\),
+\(\Omega_{\Lambda} = 0.5\) would be a spatially closed universe with
+dark energy and matter. Varying these ingredients changes the growth
+history of the universe, which changes how much the light from a
+supernova is redshifted, and how its brightness drops off with distance.
+
+(In the code below, we will call these \texttt{Omega\_M} = \(\Omega_M\)
+and \texttt{Omega\_DE} = \(\Omega_{\Lambda}\).)
+
+Distance measurements in cosmology are complicated -- see
+https://arxiv.org/abs/astro-ph/9905116 for details! For this assignment,
+we will use a cosmology package that will handle all this for us. All we
+need to use is the ``luminosity distance'', which is the one that tells
+you how objects get fainter given a redshift.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c}{\PYZsh{} Let\PYZsq{}s start by installing the Cosmology package!}
+\PY{k}{using}\PY{+w}{ }\PY{n}{Pkg}
+\PY{n}{Pkg}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{Cosmology}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{ansi-green-intense}{\textbf{   Resolving}} package versions{\ldots}
+\textcolor{ansi-green-intense}{\textbf{  No Changes}} to `\textasciitilde{}/.julia/environments/v1.10/Project.toml`
+\textcolor{ansi-green-intense}{\textbf{  No Changes}} to `\textasciitilde{}/.julia/environments/v1.10/Manifest.toml`
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c}{\PYZsh{} We\PYZsq{}ll also end up using all our old friends:}
+\PY{k}{using}\PY{+w}{ }\PY{n}{WGLMakie}
+\PY{k}{using}\PY{+w}{ }\PY{n}{CSV}
+\PY{k}{using}\PY{+w}{ }\PY{n}{DataFrames}
+\PY{k}{using}\PY{+w}{ }\PY{n}{Cosmology}
+\PY{k}{using}\PY{+w}{ }\PY{n}{Statistics}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c}{\PYZsh{} There is a data file in this directory, taken basically straight out of the Perlmutter+1999 paper.  We can read it with the CSV package.}
+\PY{n}{data}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{CSV}\PY{o}{.}\PY{n}{read}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{p99\PYZhy{}data.txt}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{DataFrame}\PY{p}{,}\PY{+w}{ }\PY{n}{delim}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{ }\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ignorerepeated}\PY{o}{=}\PY{n+nb}{true}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c}{\PYZsh{} Make a copy of the data columns that we want to treat as the \PYZdq{}y\PYZdq{} measurements.}
+\PY{c}{\PYZsh{} These are the measured brightnesses, and their Gaussian uncertainties (standard deviations).}
+\PY{n}{data}\PY{o}{.}\PY{n}{mag}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{m\PYZus{}b\PYZus{}eff}
+\PY{n}{data}\PY{o}{.}\PY{n}{sigma\PYZus{}mag}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{sigma\PYZus{}m\PYZus{}b\PYZus{}eff}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{f}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Figure}\PY{p}{(}\PY{p}{)}
+\PY{n}{Axis}\PY{p}{(}\PY{n}{f}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{title}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{Perlmutter+99 Supernovae}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlabel}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{Redshift z}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylabel}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{m\PYZus{}B}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\PY{n}{errorbars!}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{z}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{mag}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{sigma\PYZus{}mag}\PY{p}{)}
+\PY{n}{scatter!}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{z}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{mag}\PY{p}{,}\PY{+w}{ }\PY{n}{markersize}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{,}\PY{+w}{ }\PY{n}{color}\PY{o}{=}\PY{l+s+ss}{:maroon}\PY{p}{)}
+\PY{n}{save}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{perlmutterPlot.png}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{f}\PY{p}{)}
+\PY{n}{display}\PY{p}{(}\PY{n}{f}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+    
+    \begin{center}
+      
+      \includegraphics[]{perlmutterPlot.png}
+    \end{center}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Bonito.App(Bonito.var"\#8\#14"\{WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}\}(WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}(WGLMakie.Screen(
+    framerate = 30.0,
+    resize\_to = nothing,
+    px\_per\_unit = automatic,
+    scalefactor = automatic,
+    session = nothing,
+    three = Channel\{Bool\}(1) (empty),
+    scene = Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px),
+), Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px))), Base.RefValue\{Union\{Nothing, Bonito.Session\}\}(nothing), "Bonito App", false)
+    \end{Verbatim}
+
+    
+    
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+WGLMakie.Screen(
+    framerate = 30.0,
+    resize\_to = nothing,
+    px\_per\_unit = automatic,
+    scalefactor = automatic,
+    session = true,
+    three = Channel\{Bool\}(1) (1 item available),
+    scene = Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px),
+)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c}{\PYZsh{} Here is how we will use the \PYZdq{}cosmology\PYZdq{} package.  This will create a cosmology \PYZdq{}object\PYZdq{} with the parameters we pass in.}
+\PY{c}{\PYZsh{} It does not take an Omega\PYZus{}Lambda parameter; instead, it takes Omega\PYZus{}Matter, and Omega\PYZus{}K (for \PYZdq{}curvature\PYZdq{}), where}
+\PY{c}{\PYZsh{} Omega\PYZus{}K = 1. \PYZhy{} Omatter \PYZhy{} Olambda.  We will also pass in \PYZdq{}Tcmb=0\PYZdq{}, which tells it to ignore the effects of radiation.}
+
+\PY{n}{universe}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{cosmology}\PY{p}{(}\PY{n}{OmegaK}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,}\PY{+w}{ }\PY{n}{OmegaM}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{,}\PY{+w}{ }\PY{n}{Tcmb}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n+nd}{@show}\PY{+w}{ }\PY{n}{universe}
+\PY{n+nd}{@show}\PY{+w}{ }\PY{n}{universe}\PY{o}{.}\PY{n}{Ω\PYZus{}Λ}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+universe = Cosmology.OpenLCDM\{Float64\}(0.69, 0.1, 0.5, 0.4, 0.0)
+universe.Ω\_Λ = 0.5
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c}{\PYZsh{} We can then pass that \PYZdq{}universe\PYZdq{} object to other functions to compute things about it.  Basically the only one you\PYZsq{}ll}
+\PY{c}{\PYZsh{} need is this `distance\PYZus{}modulus`, which tell you, in \PYZus{}magnitudes\PYZus{}, how much fainter an object is at the given redshift,}
+\PY{c}{\PYZsh{} versus how faint it would be if it were 10 parsecs away.}
+
+\PY{k}{function}\PY{+w}{ }\PY{n}{distance\PYZus{}modulus}\PY{p}{(}\PY{n}{universe}\PY{p}{,}\PY{+w}{ }\PY{n}{z}\PY{p}{)}
+\PY{+w}{    }\PY{n}{DL}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{luminosity\PYZus{}dist}\PY{p}{(}\PY{n}{universe}\PY{p}{,}\PY{+w}{ }\PY{n}{z}\PY{p}{)}
+\PY{+w}{    }\PY{c}{\PYZsh{} DL is in Megaparsecs; the distance for absolute to observed mag is 10 pc.}
+\PY{+w}{    }\PY{l+m+mf}{5.}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{n}{log10}\PY{o}{.}\PY{p}{(}\PY{n}{DL}\PY{o}{.}\PY{n}{val}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{l+m+mf}{1e6}\PY{+w}{ }\PY{o}{/}\PY{+w}{ }\PY{l+m+mf}{10.}\PY{p}{)}
+\PY{k}{end}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    There is one more parameter to the model we will be fitting: \(M\), the
+\emph{absolute magnitude} of the supernovae. This is a ``nuisance
+parameter'' - a parameter that we have to fit for, but that we don't
+really care about; it's basically a calibration of what the intrinsic
+brightness of a supernova is. To start out, we will fix this value to a
+constant, but later we will fit for it along with our Omegas.
+
+The \emph{observed} brightness of a supernova will be its \emph{absolute
+mag} plus its \emph{distance modulus}. The \emph{distance modulus}
+depends on the redshift \emph{z} and our parameters Omega\_M and
+Omega\_DE.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c}{\PYZsh{} We\PYZsq{}ll cheat a bit and use a \PYZdq{}nominal\PYZdq{} cosmology with currently\PYZhy{}accepted values of Omega\PYZus{}M = 0.29, Omega\PYZus{}DE = 0.71.}
+\PY{n}{nominal}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{cosmology}\PY{p}{(}\PY{n}{Tcmb}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+
+\PY{n}{f}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Figure}\PY{p}{(}\PY{p}{)}
+\PY{n}{ax}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Axis}\PY{p}{(}\PY{n}{f}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{title}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{Perlmutter+99 Supernovae}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlabel}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{Redshift z}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylabel}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{Observed mag}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\PY{n}{errorbars!}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{z}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{mag}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{sigma\PYZus{}mag}\PY{p}{)}
+\PY{n}{scatter!}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{z}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{mag}\PY{p}{,}\PY{+w}{ }\PY{n}{markersize}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{,}\PY{+w}{ }\PY{n}{color}\PY{o}{=}\PY{l+s+ss}{:maroon}\PY{p}{)}
+
+\PY{c}{\PYZsh{} Compute the average absolute magnitude M given nominal cosmology \PYZhy{}\PYZhy{} ie, an estimate of the absolute mag of the supernovae}
+\PY{n}{DLx}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{map}\PY{p}{(}\PY{n}{z}\PY{o}{\PYZhy{}\PYZgt{}}\PY{n}{distance\PYZus{}modulus}\PY{p}{(}\PY{n}{nominal}\PY{p}{,}\PY{+w}{ }\PY{n}{z}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{z}\PY{p}{)}
+\PY{n}{abs\PYZus{}mag}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{median}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{mag}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{DLx}\PY{p}{)}
+
+\PY{c}{\PYZsh{} Here\PYZsq{}s another way to plot a function evaluated on a grid of values.}
+\PY{n}{zgrid}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m+mf}{0.01}\PY{o}{:}\PY{l+m+mf}{0.01}\PY{o}{:}\PY{l+m+mf}{1.}
+\PY{n}{DL}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{map}\PY{p}{(}\PY{n}{z}\PY{o}{\PYZhy{}\PYZgt{}}\PY{n}{distance\PYZus{}modulus}\PY{p}{(}\PY{n}{nominal}\PY{p}{,}\PY{+w}{ }\PY{n}{z}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{zgrid}\PY{p}{)}
+\PY{n}{lines!}\PY{p}{(}\PY{n}{zgrid}\PY{p}{,}\PY{+w}{ }\PY{n}{DL}\PY{+w}{ }\PY{o}{.+}\PY{+w}{ }\PY{n}{abs\PYZus{}mag}\PY{p}{,}\PY{+w}{ }\PY{n}{label}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{Nominal OmegaM = 0.29, OmegaDE = 0.71}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+
+\PY{n}{universe}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{cosmology}\PY{p}{(}\PY{n}{OmegaK}\PY{o}{=}\PY{l+m+mf}{0.0}\PY{p}{,}\PY{+w}{ }\PY{n}{OmegaM}\PY{o}{=}\PY{l+m+mf}{0.6}\PY{p}{,}\PY{+w}{ }\PY{n}{Tcmb}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{DL}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{map}\PY{p}{(}\PY{n}{z}\PY{o}{\PYZhy{}\PYZgt{}}\PY{n}{distance\PYZus{}modulus}\PY{p}{(}\PY{n}{universe}\PY{p}{,}\PY{+w}{ }\PY{n}{z}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{zgrid}\PY{p}{)}
+\PY{n}{lines!}\PY{p}{(}\PY{n}{zgrid}\PY{p}{,}\PY{+w}{ }\PY{n}{DL}\PY{+w}{ }\PY{o}{.+}\PY{+w}{ }\PY{n}{abs\PYZus{}mag}\PY{p}{,}\PY{+w}{ }\PY{n}{color}\PY{o}{=}\PY{l+s+ss}{:red}\PY{p}{,}\PY{+w}{ }\PY{n}{label}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{OmegaM = 0.6, OmegaDE = 0.4}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+
+\PY{n}{universe}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{cosmology}\PY{p}{(}\PY{n}{OmegaK}\PY{o}{=}\PY{l+m+mf}{0.0}\PY{p}{,}\PY{+w}{ }\PY{n}{OmegaM}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,}\PY{+w}{ }\PY{n}{Tcmb}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{DL}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{map}\PY{p}{(}\PY{n}{z}\PY{o}{\PYZhy{}\PYZgt{}}\PY{n}{distance\PYZus{}modulus}\PY{p}{(}\PY{n}{universe}\PY{p}{,}\PY{+w}{ }\PY{n}{z}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{zgrid}\PY{p}{)}
+\PY{n}{lines!}\PY{p}{(}\PY{n}{zgrid}\PY{p}{,}\PY{+w}{ }\PY{n}{DL}\PY{+w}{ }\PY{o}{.+}\PY{+w}{ }\PY{n}{abs\PYZus{}mag}\PY{p}{,}\PY{+w}{ }\PY{n}{color}\PY{o}{=}\PY{l+s+ss}{:green}\PY{p}{,}\PY{+w}{ }\PY{n}{label}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{OmegaM = 0.1, OmegaDE = 0.9}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+
+\PY{c}{\PYZsh{}f[2,1] = Legend(f, ax, \PYZdq{}Cosmologies\PYZdq{}, framevisible = false)}
+\PY{c}{\PYZsh{} Create a legend for our plot}
+\PY{n}{axislegend}\PY{p}{(}\PY{n}{ax}\PY{p}{,}\PY{+w}{ }\PY{n}{position}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+s+ss}{:rb}\PY{p}{)}
+\PY{n}{save}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{PerlmutterLines.png}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\PY{n}{f}
+\end{Verbatim}
+
+
+\end{tcolorbox}
+
+    \begin{center}
+      \includegraphics[]{/home/jgouws/PSICourses/numericalMethods/PSI-Numerical-Methods-2024-MCMC-Homework1/PerlmutterLines.png}
+    \end{center}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c}{\PYZsh{} Here\PYZsq{}s our scalar estimate of the absolute mag.}
+\PY{n}{abs\PYZus{}mag}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+-19.228824925301424
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{part-1---the-log-likelihood-terrain}{%
+\subsection{Part 1 - The Log-likelihood
+terrain}\label{part-1---the-log-likelihood-terrain}}
+
+    First, you have to write out the likelihood function for the observed
+supernova data, given cosmological model parameters.
+
+That is, please complete the following function. It will be passed
+vectors of \texttt{z}, \texttt{mag}, and \texttt{mag\_error}
+measurements, plus scalar parameters \texttt{M}, \texttt{Omega\_M} and
+\texttt{Omega\_DE}. You will need to create a ``cosmology'' object, find
+the \emph{distance modulus} for each redshift \texttt{z}, and add that
+to the absolute mag \texttt{M} to get the \emph{predicted} magnitude.
+You will then compare that to each measured magnitude, and compute the
+likelihood.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{function}\PY{+w}{ }\PY{n}{supernova\PYZus{}log\PYZus{}likelihood}\PY{p}{(}\PY{n}{zs}\PY{p}{,}\PY{+w}{ }\PY{n}{mag}\PY{p}{,}\PY{+w}{ }\PY{n}{mag\PYZus{}error}\PY{p}{,}\PY{+w}{ }\PY{n}{M}\PY{p}{,}\PY{+w}{ }\PY{n}{Omatter}\PY{p}{,}\PY{+w}{ }\PY{n}{Ode}\PY{p}{)}
+\PY{+w}{    }\PY{c}{\PYZsh{} z: vector of redshifts}
+\PY{+w}{    }\PY{c}{\PYZsh{} mag: vector of measured magnitudes}
+\PY{+w}{    }\PY{c}{\PYZsh{} mag\PYZus{}error: vector of uncertainties on the measured magnitudes (sigmas).}
+\PY{+w}{    }\PY{c}{\PYZsh{} M: scalar, absolute magnitude of a Type\PYZhy{}1a supernova}
+\PY{+w}{    }\PY{c}{\PYZsh{} Omatter: scalar Omega\PYZus{}M, amount of matter in the universe}
+\PY{+w}{    }\PY{c}{\PYZsh{} Ode: scalar Omega\PYZus{}DE, amount of dark energy in the universe}
+
+\PY{+w}{    }\PY{c}{\PYZsh{}\PYZsh{}\PYZsh{}   YOUR CODE HERE!!}
+\PY{+w}{    }\PY{n}{cosModel}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{cosmology}\PY{p}{(}\PY{n}{OmegaK}\PY{o}{=}\PY{l+m+mf}{1.}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{Omatter}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{Ode}\PY{p}{,}\PY{+w}{ }\PY{n}{OmegaM}\PY{o}{=}\PY{n}{Omatter}\PY{p}{,}\PY{+w}{ }\PY{n}{Tcmb}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}\PY{+w}{ }\PY{c}{\PYZsh{}make the cosmology \PYZdq{}object\PYZdq{}}
+
+\PY{+w}{    }\PY{n}{mag\PYZus{}pred}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{p}{(}\PY{n}{z}\PY{+w}{ }\PY{o}{\PYZhy{}\PYZgt{}}\PY{+w}{ }\PY{n}{distance\PYZus{}modulus}\PY{p}{(}\PY{n}{cosModel}\PY{p}{,}\PY{+w}{ }\PY{n}{z}\PY{p}{)}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{M}\PY{p}{)}\PY{o}{.}\PY{p}{(}\PY{n}{zs}\PY{p}{)}\PY{+w}{ }\PY{c}{\PYZsh{}vectorize the operations on zs}
+
+\PY{+w}{    }\PY{n}{chi}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{p}{(}\PY{n}{mag\PYZus{}pred}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{mag}\PY{p}{)}\PY{+w}{ }\PY{o}{./}\PY{+w}{ }\PY{n}{mag\PYZus{}error}
+\PY{+w}{    }\PY{n}{sum}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.5}\PY{+w}{ }\PY{o}{.*}\PY{+w}{ }\PY{n}{chi}\PY{o}{.\PYZca{}}\PY{l+m+mi}{2}\PY{p}{)}
+
+\PY{+w}{    }\PY{c}{\PYZsh{} You must return a scalar value}
+\PY{k}{end}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Next, please keep \texttt{M} fixed to the \texttt{abs\_mag} value we
+computed above, and call your \texttt{supernova\_log\_likelihood} on a
+grid of \texttt{Omega\_M} and \texttt{Omega\_DE} values. (You will pass
+in \texttt{data.z}, \texttt{data.mag}, and \texttt{data.sigma\_mag} for
+the \texttt{z}, \texttt{mag}, and \texttt{mag\_error} values.)
+
+Try a grid from 0 to 1 for both Omega\_M and Omega\_DE, and show the
+\texttt{supernova\_log\_likelihood} values using the \texttt{heatmap}
+function. You may find it helpful to limit the range using something
+like
+\texttt{heatmap(om\_grid,\ ode\_grid,\ sn\_ll,\ colorrange={[}maximum(sn\_ll)-20,\ maximum(sn\_ll){]})}.
+
+Another thing you can do is, instead of showing the
+\emph{log}-likelihood, show the likelihood by taking the \texttt{exp} of
+your \texttt{sn\_ll} grid, like this,
+\texttt{heatmap(om\_grid,\ ode\_grid,\ exp.(sn\_ll))}.
+
+Please compare your plot to Figure 7 in the Perlmutter et al.~1999
+paper, shown below. Does your likelihood contour look consistent with
+the blue ellipses?
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{n\PYZus{}om}\PY{p}{,}\PY{+w}{ }\PY{n}{n\PYZus{}ode}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m+mi}{50}\PY{p}{,}\PY{l+m+mi}{50}
+\PY{n}{om\PYZus{}grid}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{k+kt}{LinRange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{,}\PY{+w}{ }\PY{n}{n\PYZus{}om}\PY{p}{)}
+\PY{n}{ode\PYZus{}grid}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{k+kt}{LinRange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{,}\PY{+w}{ }\PY{n}{n\PYZus{}ode}\PY{p}{)}
+\PY{n}{sn\PYZus{}ll}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{zeros}\PY{p}{(}\PY{n}{n\PYZus{}om}\PY{p}{,}\PY{+w}{ }\PY{n}{n\PYZus{}ode}\PY{p}{)}
+\PY{k}{for}\PY{+w}{ }\PY{n}{i}\PY{+w}{ }\PY{k}{in}\PY{+w}{ }\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{n\PYZus{}om}
+\PY{+w}{    }\PY{k}{for}\PY{+w}{ }\PY{n}{j}\PY{+w}{ }\PY{k}{in}\PY{+w}{ }\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{n\PYZus{}ode}
+\PY{+w}{        }\PY{n}{sn\PYZus{}ll}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{]}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{supernova\PYZus{}log\PYZus{}likelihood}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{z}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{mag}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{sigma\PYZus{}mag}\PY{p}{,}\PY{+w}{ }\PY{n}{abs\PYZus{}mag}\PY{p}{,}\PY{+w}{ }\PY{n}{om\PYZus{}grid}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{ode\PYZus{}grid}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{p}{)}
+\PY{+w}{    }\PY{k}{end}
+\PY{k}{end}
+\PY{n}{f}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Figure}\PY{p}{(}\PY{p}{)}
+\PY{n}{ax}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Axis}\PY{p}{(}\PY{n}{f}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{heatmap!}\PY{p}{(}\PY{n}{om\PYZus{}grid}\PY{p}{,}\PY{+w}{ }\PY{n}{ode\PYZus{}grid}\PY{p}{,}\PY{+w}{ }\PY{n}{sn\PYZus{}ll}\PY{p}{,}\PY{+w}{ }\PY{n}{colorrange}\PY{o}{=}\PY{p}{[}\PY{n}{maximum}\PY{p}{(}\PY{n}{sn\PYZus{}ll}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{l+m+mi}{20}\PY{p}{,}\PY{+w}{ }\PY{n}{maximum}\PY{p}{(}\PY{n}{sn\PYZus{}ll}\PY{p}{)}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{save}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{FirstHeatmapLimitedRange.png}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{f}\PY{p}{)}
+\PY{n}{f}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+      \includegraphics[]{FirstHeatmapLimitedRange.png}
+    \end{center}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Bonito.App(Bonito.var"\#8\#14"\{WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}\}(WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}(WGLMakie.Screen(
+    framerate = 30.0,
+    resize\_to = nothing,
+    px\_per\_unit = automatic,
+    scalefactor = automatic,
+    session = nothing,
+    three = Channel\{Bool\}(1) (empty),
+    scene = Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px),
+), Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px))), Base.RefValue\{Union\{Nothing, Bonito.Session\}\}(nothing), "Bonito App", false)
+    \end{Verbatim}
+
+    
+    The resulting heat map looks pretty similar to the contour plot in
+Perlmutter, same shape and direction in the restricted region.
+
+    
+
+    Next, try expanding the grid ranges for Omega\_M and Omega\_DE up to,
+say, 0 to 2 or 0 to 3. You should encounter a problem -- the cosmology
+package will fail to compute the \texttt{distance\_modulus} for some
+combinations! You can work around this by using Julia's
+\texttt{try...catch} syntax, like this:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{n\PYZus{}om2}\PY{p}{,}\PY{+w}{ }\PY{n}{n\PYZus{}ode2}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m+mi}{100}\PY{p}{,}\PY{l+m+mi}{100}
+\PY{n}{om\PYZus{}grid2}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{k+kt}{LinRange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{3}\PY{p}{,}\PY{+w}{ }\PY{n}{n\PYZus{}om2}\PY{p}{)}
+\PY{n}{ode\PYZus{}grid2}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{k+kt}{LinRange}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.5}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{3}\PY{p}{,}\PY{+w}{ }\PY{n}{n\PYZus{}ode2}\PY{p}{)}
+\PY{n}{sn\PYZus{}ll2}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{zeros}\PY{p}{(}\PY{n}{n\PYZus{}om2}\PY{p}{,}\PY{+w}{ }\PY{n}{n\PYZus{}ode2}\PY{p}{)}
+\PY{k}{for}\PY{+w}{ }\PY{n}{i}\PY{+w}{ }\PY{k}{in}\PY{+w}{ }\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{n\PYZus{}om2}
+\PY{+w}{    }\PY{k}{for}\PY{+w}{ }\PY{n}{j}\PY{+w}{ }\PY{k}{in}\PY{+w}{ }\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{n\PYZus{}ode2}
+\PY{+w}{        }\PY{k}{try}\PY{+w}{ }\PY{c}{\PYZsh{}very bad way of doing this, should rather make supernova\PYZus{}log\PYZus{}likelihood to check for parameters.}
+\PY{+w}{            }\PY{n}{sn\PYZus{}ll2}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{]}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{supernova\PYZus{}log\PYZus{}likelihood}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{z}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{mag}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{sigma\PYZus{}mag}\PY{p}{,}\PY{+w}{ }\PY{n}{abs\PYZus{}mag}\PY{p}{,}\PY{+w}{ }\PY{n}{om\PYZus{}grid2}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{ode\PYZus{}grid2}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{p}{)}
+\PY{+w}{        }\PY{k}{catch}\PY{+w}{ }\PY{n}{err}
+\PY{+w}{            }\PY{n}{sn\PYZus{}ll2}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{]}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{n+nb}{Inf}
+\PY{+w}{        }\PY{k}{end}
+\PY{+w}{    }\PY{k}{end}
+\PY{k}{end}
+
+\PY{n}{f}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Figure}\PY{p}{(}\PY{p}{)}
+\PY{n}{ax}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Axis}\PY{p}{(}\PY{n}{f}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{heatmap!}\PY{p}{(}\PY{n}{om\PYZus{}grid2}\PY{p}{,}\PY{+w}{ }\PY{n}{ode\PYZus{}grid2}\PY{p}{,}\PY{+w}{ }\PY{n}{sn\PYZus{}ll2}\PY{p}{,}\PY{+w}{ }\PY{n}{colorrange}\PY{o}{=}\PY{p}{[}\PY{n}{maximum}\PY{p}{(}\PY{n}{sn\PYZus{}ll2}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{l+m+mi}{20}\PY{p}{,}\PY{+w}{ }\PY{n}{maximum}\PY{p}{(}\PY{n}{sn\PYZus{}ll2}\PY{p}{)}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{save}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{HeatmapExtendedRange.png}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{f}\PY{p}{)}
+\PY{n}{f}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+      
+      \includegraphics[]{HeatmapExtendedRange.png}
+    \end{center}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Bonito.App(Bonito.var"\#8\#14"\{WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}\}(WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}(WGLMakie.Screen(
+    framerate = 30.0,
+    resize\_to = nothing,
+    px\_per\_unit = automatic,
+    scalefactor = automatic,
+    session = nothing,
+    three = Channel\{Bool\}(1) (empty),
+    scene = Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px),
+), Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px))), Base.RefValue\{Union\{Nothing, Bonito.Session\}\}(nothing), "Bonito App", false)
+    \end{Verbatim}
+
+    
+    This will ``try'' to run the \texttt{supernova\_log\_likelihood}
+function, and if it fails, it will go into the ``catch'' branch.
+
+    \hypertarget{part-2---using-mcmc-to-sample-from-the-likelihood}{%
+\subsection{Part 2 - Using MCMC to sample from the
+likelihood}\label{part-2---using-mcmc-to-sample-from-the-likelihood}}
+
+    Next, we will use Markov Chain Monte Carlo to draw samples from the
+likelihood distribution.
+
+You can start with the \texttt{mcmc} function from the lecture.
+
+You will need to tune the MCMC proposal's step sizes (also known as
+``jump sizes''). To do this, you can use the variant of the
+\texttt{mcmc} routine that cycles through the parameters and only jumps
+one at a time, named \texttt{mcmc\_cyclic} in the updated lecture
+notebook. After tuning the step sizes with \texttt{mcmc\_cyclic}, you
+can go back to the plain \texttt{mcmc} routine if you want, or stick
+with \texttt{mcmc\_cyclic}; it is up to you.
+
+Please plot the samples from your MCMC chains, to demonstrate that the
+chain looks like it has converged. Ideally, you would like to see
+reasonable acceptance rates, and you would like to see the samples
+``exploring'' the parameter space. Decide how many step you need to run
+the MCMC routine for, and write a sentence or two describing why you
+think that's a good number.
+
+For this part, please include the \texttt{M} (absolute magnitude) as a
+parameter that you are fitting -- so you are fitting for \texttt{M} in
+addition to \texttt{Omega\_M} and \texttt{Omega\_DE}. This is a quite
+standard situation where you have a ``nuisance'' parameter \texttt{M}
+that you don't really care about, in addition to the \texttt{Omega}
+parameters that you do care about.
+
+    It is quite common to plot the results from an MCMC sampling using a
+``corner plot'', which shows the distribution of each of the individual
+parameters, and the joint distributions of pairs of parameters. This
+will help you determine whether some of the parameters are correlated
+with each other.
+
+Below is a function you can use to generate corner plots from your chain
+-- call it like
+\texttt{cornerplot(chain,\ {[}"M",\ "Omega\_M",\ "Omega\_DE"{]})}. There
+is also a CornerPlot package (https://juliapackages.com/p/cornerplot)
+but I have not had luck getting it to work for me.
+
+Once you have made you corner plots, please write a few sentences
+interpreting what you see. Is the nuisance parameter \texttt{M}
+correlated with the Omegas? Are the Omegas correlated with each other?
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{function}\PY{+w}{ }\PY{n}{cornerplot}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{+w}{ }\PY{n}{names}\PY{p}{;}\PY{+w}{ }\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{600}\PY{p}{,}\PY{l+m+mi}{600}\PY{p}{)}\PY{p}{)}
+\PY{+w}{    }\PY{c}{\PYZsh{} how many columns of data}
+\PY{+w}{    }\PY{n}{dim}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{size}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{2}\PY{p}{)}
+\PY{+w}{    }\PY{c}{\PYZsh{} rows to plot}
+\PY{+w}{    }\PY{n}{idxs}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{size}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{+w}{    }\PY{n}{f}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Figure}\PY{p}{(}\PY{n}{size}\PY{o}{=}\PY{n}{figsize}\PY{p}{)}
+\PY{+w}{    }\PY{k}{for}\PY{+w}{ }\PY{n}{i}\PY{+w}{ }\PY{k}{in}\PY{+w}{ }\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{dim}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{+w}{ }\PY{k}{in}\PY{+w}{ }\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{dim}
+\PY{+w}{        }\PY{k}{if}\PY{+w}{ }\PY{n}{i}\PY{+w}{ }\PY{o}{\PYZlt{}}\PY{+w}{ }\PY{n}{j}
+\PY{+w}{            }\PY{k}{continue}
+\PY{+w}{        }\PY{k}{end}
+\PY{+w}{        }\PY{n}{ax}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Axis}\PY{p}{(}\PY{n}{f}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{aspect}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{,}
+\PY{+w}{                  }\PY{n}{topspinevisible}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nb}{false}\PY{p}{,}
+\PY{+w}{                  }\PY{n}{rightspinevisible}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n+nb}{false}\PY{p}{,}\PY{p}{)}
+\PY{+w}{        }\PY{k}{if}\PY{+w}{ }\PY{n}{i}\PY{+w}{ }\PY{o}{==}\PY{+w}{ }\PY{n}{j}
+\PY{+w}{            }\PY{n}{hist!}\PY{p}{(}\PY{n}{x}\PY{p}{[}\PY{n}{idxs}\PY{p}{,}\PY{n}{i}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{direction}\PY{o}{=}\PY{l+s+ss}{:y}\PY{p}{)}
+\PY{+w}{            }\PY{n}{ax}\PY{o}{.}\PY{n}{xlabel}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{names}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+\PY{+w}{        }\PY{k}{else}
+\PY{+w}{            }\PY{c}{\PYZsh{}scatter!(x[idxs,j], x[idxs,i], markersize=4)}
+\PY{+w}{            }\PY{n}{hexbin!}\PY{p}{(}\PY{n}{x}\PY{p}{[}\PY{n}{idxs}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{x}\PY{p}{[}\PY{n}{idxs}\PY{p}{,}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+\PY{+w}{            }\PY{n}{ax}\PY{o}{.}\PY{n}{xlabel}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{names}\PY{p}{[}\PY{n}{j}\PY{p}{]}
+\PY{+w}{            }\PY{n}{ax}\PY{o}{.}\PY{n}{ylabel}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{names}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+\PY{+w}{        }\PY{k}{end}
+\PY{+w}{    }\PY{k}{end}
+\PY{+w}{    }\PY{n}{f}
+\PY{k}{end}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Here is the cyclic Markov Chain Monte Carlo function that I got from the
+lecture notes.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{function}\PY{+w}{ }\PY{n}{mcmc\PYZus{}cyclic}\PY{p}{(}\PY{n}{logprob\PYZus{}func}\PY{p}{,}\PY{+w}{ }\PY{n}{propose\PYZus{}func}\PY{p}{,}\PY{+w}{ }\PY{n}{initial\PYZus{}p}\PY{p}{,}\PY{+w}{ }\PY{n}{n\PYZus{}steps}\PY{p}{)}
+\PY{+w}{    }\PY{n}{p}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{initial\PYZus{}p}
+\PY{+w}{    }\PY{n}{logprob}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{logprob\PYZus{}func}\PY{p}{(}\PY{n}{p}\PY{p}{)}
+\PY{+w}{    }\PY{n}{chain}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{zeros}\PY{p}{(}\PY{n}{n\PYZus{}steps}\PY{p}{,}\PY{+w}{ }\PY{n}{length}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{)}
+\PY{+w}{    }\PY{n}{n\PYZus{}accept}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{zeros}\PY{p}{(}\PY{n}{length}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{)}
+
+\PY{+w}{    }\PY{k}{for}\PY{+w}{ }\PY{n}{i}\PY{+w}{ }\PY{k}{in}\PY{+w}{ }\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{n\PYZus{}steps}
+
+\PY{+w}{        }\PY{c}{\PYZsh{} We\PYZsq{}re going to update one index at a time... 1, 2, 1, 2, ....}
+\PY{+w}{        }\PY{n}{update\PYZus{}index}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m+mi}{1}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{p}{(}\PY{p}{(}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZpc{}}\PY{+w}{ }\PY{n}{length}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{)}
+
+\PY{+w}{        }\PY{c}{\PYZsh{} Call the proposal function to generate new values for all parameters...}
+\PY{+w}{        }\PY{n}{p\PYZus{}prop}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{propose\PYZus{}func}\PY{p}{(}\PY{n}{p}\PY{p}{)}
+\PY{+w}{        }\PY{c}{\PYZsh{} ... but then only keep one of the new parameter values!}
+\PY{+w}{        }\PY{n}{p\PYZus{}new}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{copy}\PY{p}{(}\PY{n}{p}\PY{p}{)}
+\PY{+w}{        }\PY{n}{p\PYZus{}new}\PY{p}{[}\PY{n}{update\PYZus{}index}\PY{p}{]}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{p\PYZus{}prop}\PY{p}{[}\PY{n}{update\PYZus{}index}\PY{p}{]}
+\PY{+w}{        }
+\PY{+w}{        }\PY{n}{logprob\PYZus{}new}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{logprob\PYZus{}func}\PY{p}{(}\PY{n}{p\PYZus{}new}\PY{p}{)}
+
+\PY{+w}{        }\PY{n}{ratio}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{exp}\PY{p}{(}\PY{n}{logprob\PYZus{}new}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{logprob}\PY{p}{)}
+\PY{+w}{        }\PY{k}{if}\PY{+w}{ }\PY{n}{ratio}\PY{+w}{ }\PY{o}{\PYZgt{}}\PY{+w}{ }\PY{l+m+mi}{1}
+\PY{+w}{            }\PY{c}{\PYZsh{} Jump to the new place}
+\PY{+w}{            }\PY{n}{p}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{p\PYZus{}new}
+\PY{+w}{            }\PY{n}{logprob}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{logprob\PYZus{}new}
+\PY{+w}{            }\PY{n}{n\PYZus{}accept}\PY{p}{[}\PY{n}{update\PYZus{}index}\PY{p}{]}\PY{+w}{ }\PY{o}{+=}\PY{+w}{ }\PY{l+m+mi}{1}
+\PY{+w}{        }\PY{k}{else}
+\PY{+w}{            }\PY{c}{\PYZsh{} Jump to the new place with probability \PYZdq{}ratio\PYZdq{}}
+\PY{+w}{            }\PY{n}{u}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{rand}\PY{p}{(}\PY{p}{)}
+\PY{+w}{            }\PY{k}{if}\PY{+w}{ }\PY{n}{u}\PY{+w}{ }\PY{o}{\PYZlt{}}\PY{+w}{ }\PY{n}{ratio}
+\PY{+w}{                }\PY{c}{\PYZsh{} Jump to the new place}
+\PY{+w}{                }\PY{n}{p}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{p\PYZus{}new}
+\PY{+w}{                }\PY{n}{logprob}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{logprob\PYZus{}new}
+\PY{+w}{                }\PY{n}{n\PYZus{}accept}\PY{p}{[}\PY{n}{update\PYZus{}index}\PY{p}{]}\PY{+w}{ }\PY{o}{+=}\PY{+w}{ }\PY{l+m+mi}{1}
+\PY{+w}{            }\PY{k}{else}
+\PY{+w}{                }\PY{c}{\PYZsh{} Stay where we are}
+\PY{+w}{            }\PY{k}{end}
+\PY{+w}{        }\PY{k}{end}
+\PY{+w}{        }\PY{n}{chain}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{1}\PY{o}{:}\PY{k}{end}\PY{p}{]}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{p}
+\PY{+w}{    }\PY{k}{end}
+\PY{+w}{    }\PY{c}{\PYZsh{} The number of times we step each parameter is roughly n\PYZus{}steps / n\PYZus{}parameters}
+\PY{+w}{    }\PY{n}{chain}\PY{p}{,}\PY{+w}{ }\PY{n}{n\PYZus{}accept}\PY{+w}{ }\PY{o}{./}\PY{+w}{ }\PY{p}{(}\PY{n}{n\PYZus{}steps}\PY{+w}{ }\PY{o}{./}\PY{+w}{ }\PY{n}{length}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{)}
+\PY{k}{end}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Here I run the cyclic Monte Carlo Markov chain so that I can tune the
+parameters. I went for more samples and smaller jumps as this function
+does not take too long to execute. I took a look at acceptance rates too
+to make sure that most jumps were good jumps, I chose the smaller jumps
+size to increase the acceptance rate of sampling with all paramters
+having similar acceptance rates.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{function}\PY{+w}{ }\PY{n}{propose}\PY{p}{(}\PY{n}{p}\PY{p}{,}\PY{+w}{ }\PY{n}{jump\PYZus{}sizes}\PY{p}{)}
+\PY{+w}{    }\PY{n}{p}\PY{+w}{ }\PY{o}{.+}\PY{+w}{ }\PY{n}{randn}\PY{p}{(}\PY{n}{length}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{)}\PY{+w}{ }\PY{o}{.*}\PY{+w}{ }\PY{n}{jump\PYZus{}sizes}
+\PY{k}{end}\PY{p}{;}
+
+\PY{n}{initial\PYZus{}guess}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{p}{[}\PY{n}{abs\PYZus{}mag}\PY{p}{,}\PY{+w}{ }\PY{l+m+mf}{.5}\PY{p}{,}\PY{+w}{ }\PY{l+m+mf}{.5}\PY{p}{]}
+\PY{n}{jump\PYZus{}sizes}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{p}{[}\PY{l+m+mf}{0.02}\PY{p}{,}\PY{+w}{ }\PY{l+m+mf}{0.09}\PY{p}{,}\PY{+w}{ }\PY{l+m+mf}{0.1}\PY{p}{]}
+
+\PY{n}{chain}\PY{p}{,}\PY{+w}{ }\PY{n}{accept\PYZus{}rate}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{mcmc\PYZus{}cyclic}\PY{p}{(}\PY{n}{p}\PY{+w}{ }\PY{o}{\PYZhy{}\PYZgt{}}\PY{+w}{ }
+\PY{+w}{        }\PY{n}{supernova\PYZus{}log\PYZus{}likelihood}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{z}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{mag}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{sigma\PYZus{}mag}\PY{p}{,}\PY{+w}{ }\PY{n}{p}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{p}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{p}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+\PY{n}{p}\PY{+w}{ }\PY{o}{\PYZhy{}\PYZgt{}}\PY{+w}{ }\PY{n}{propose}\PY{p}{(}\PY{n}{p}\PY{p}{,}\PY{+w}{ }\PY{n}{jump\PYZus{}sizes}\PY{p}{)}\PY{p}{,}
+\PY{n}{initial\PYZus{}guess}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{150000}\PY{p}{)}
+\PY{n}{println}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{Acceptance Rates}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\PY{n}{accept\PYZus{}rate}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Acceptance Rates
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+3-element Vector\{Float64\}:
+ 0.78388
+ 0.69756
+ 0.71164
+\end{Verbatim}
+\end{tcolorbox}
+        
+    I only plot the samples as the corner plot as it makes the sampling most
+clear.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{cplot1}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{cornerplot}\PY{p}{(}\PY{n}{chain}\PY{p}{,}\PY{+w}{ }\PY{p}{[}\PY{l+s}{\PYZdq{}}\PY{l+s}{M}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{l+s}{\PYZdq{}}\PY{l+s}{Omega\PYZus{}M}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{l+s}{\PYZdq{}}\PY{l+s}{Omega\PYZus{}DE}\PY{l+s}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{save}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{cornerplotFirstMCMC.png}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{cplot1}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+      
+      \includegraphics[]{cornerplotFirstMCMC.png}
+    \end{center}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Bonito.App(Bonito.var"\#8\#14"\{WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}\}(WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}(WGLMakie.Screen(
+    framerate = 30.0,
+    resize\_to = nothing,
+    px\_per\_unit = automatic,
+    scalefactor = automatic,
+    session = nothing,
+    three = Channel\{Bool\}(1) (empty),
+    scene = Scene (600px, 600px):
+  0 Plots
+  6 Child Scenes:
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    └ Scene (600px, 600px),
+), Scene (600px, 600px):
+  0 Plots
+  6 Child Scenes:
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    └ Scene (600px, 600px))), Base.RefValue\{Union\{Nothing, Bonito.Session\}\}(nothing), "Bonito App", false)
+    \end{Verbatim}
+
+    
+    From the above corner plot, \(\Omega_M\) and \(M\) seem slightly
+negatively correlated, \(\Omega_{DE}\) and \(M\) also seem slightly
+negatively correlated. Finally, \(\Omega_M\) and \(\Omega_{DE}\) are
+strongly positively correlated.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{f}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Figure}\PY{p}{(}\PY{n}{size}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{p}{(}\PY{l+m+mi}{1500}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{400}\PY{p}{)}\PY{p}{)}
+\PY{n}{ax}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Axis}\PY{p}{(}\PY{n}{f}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{title}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{MCMC chain for M}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlabel}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{step}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylabel}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{M}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+
+\PY{n}{scatter!}\PY{p}{(}\PY{n}{chain}\PY{p}{[}\PY{l+m+mi}{1}\PY{o}{:}\PY{l+m+mi}{10}\PY{o}{:}\PY{k}{end}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+\PY{n}{ax}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Axis}\PY{p}{(}\PY{n}{f}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{title}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{MCMC chain for Omega\PYZus{}M}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlabel}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{step}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylabel}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{Omega\PYZus{}M}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\PY{n}{scatter!}\PY{p}{(}\PY{n}{chain}\PY{p}{[}\PY{l+m+mi}{1}\PY{o}{:}\PY{l+m+mi}{10}\PY{o}{:}\PY{k}{end}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}
+\PY{n}{ax}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Axis}\PY{p}{(}\PY{n}{f}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{title}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{MCMC chain for Omega\PYZus{}DE}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{xlabel}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{step}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{ylabel}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{Omega\PYZus{}DE}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+\PY{n}{scatter!}\PY{p}{(}\PY{n}{chain}\PY{p}{[}\PY{l+m+mi}{1}\PY{o}{:}\PY{l+m+mi}{10}\PY{o}{:}\PY{k}{end}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{save}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{MCMCChain.png}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{f}\PY{p}{)}
+\PY{n}{display}\PY{p}{(}\PY{n}{f}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+      
+      \includegraphics[scale=1.1]{MCMCChain.png}
+    \end{center}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Bonito.App(Bonito.var"\#8\#14"\{WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}\}(WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}(WGLMakie.Screen(
+    framerate = 30.0,
+    resize\_to = nothing,
+    px\_per\_unit = automatic,
+    scalefactor = automatic,
+    session = nothing,
+    three = Channel\{Bool\}(1) (empty),
+    scene = Scene (1500px, 400px):
+  0 Plots
+  3 Child Scenes:
+    ├ Scene (1500px, 400px)
+    ├ Scene (1500px, 400px)
+    └ Scene (1500px, 400px),
+), Scene (1500px, 400px):
+  0 Plots
+  3 Child Scenes:
+    ├ Scene (1500px, 400px)
+    ├ Scene (1500px, 400px)
+    └ Scene (1500px, 400px))), Base.RefValue\{Union\{Nothing, Bonito.Session\}\}(nothing), "Bonito App", false)
+    \end{Verbatim}
+
+    
+    
+    
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+WGLMakie.Screen(
+    framerate = 30.0,
+    resize\_to = nothing,
+    px\_per\_unit = automatic,
+    scalefactor = automatic,
+    session = true,
+    three = Channel\{Bool\}(1) (1 item available),
+    scene = Scene (1500px, 400px):
+  0 Plots
+  3 Child Scenes:
+    ├ Scene (1500px, 400px)
+    ├ Scene (1500px, 400px)
+    └ Scene (1500px, 400px),
+)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Finally, please try to make a contour plot similar to Perlmutter et
+al.'s Figure 7. From your MCMC chain, you can pull out the
+\texttt{Omega\_M} and \texttt{Omega\_DE} arrays, and then create a 2-d
+histogram. Once you have a 2-d histogram, you can use the
+\texttt{contour} function to find and plot the contours in that
+histogram.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{OmegaMMCMC}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{chain}\PY{p}{[}\PY{n}{begin}\PY{o}{:}\PY{n}{end}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{2}\PY{p}{]}
+\PY{n}{OmegaDEMCMC}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{chain}\PY{p}{[}\PY{n}{begin}\PY{o}{:}\PY{n}{end}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Here I bin the data in a 2D histogram. I did it in a for loop placing
+the histogram values in appropriate bins.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{n\PYZus{}ombins}\PY{p}{,}\PY{+w}{ }\PY{n}{n\PYZus{}odebins}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{20}
+
+\PY{n}{om\PYZus{}gridMCMC}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{k+kt}{LinRange}\PY{p}{(}\PY{n}{minimum}\PY{p}{(}\PY{n}{OmegaMMCMC}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{maximum}\PY{p}{(}\PY{n}{OmegaMMCMC}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{n\PYZus{}ombins}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{ode\PYZus{}gridMCMC}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{k+kt}{LinRange}\PY{p}{(}\PY{n}{minimum}\PY{p}{(}\PY{n}{OmegaDEMCMC}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{maximum}\PY{p}{(}\PY{n}{OmegaDEMCMC}\PY{p}{)}\PY{p}{,}\PY{+w}{ }\PY{n}{n\PYZus{}odebins}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{)}
+
+\PY{n}{minOmegaMMCMC}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{minimum}\PY{p}{(}\PY{n}{OmegaMMCMC}\PY{p}{)}
+\PY{n}{minOmegaDEMCMC}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{minimum}\PY{p}{(}\PY{n}{OmegaDEMCMC}\PY{p}{)}
+\PY{n}{maxOmegaMMCMC}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{maximum}\PY{p}{(}\PY{n}{OmegaMMCMC}\PY{p}{)}
+\PY{n}{maxOmegaDEMCMC}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{maximum}\PY{p}{(}\PY{n}{OmegaDEMCMC}\PY{p}{)}
+\PY{n}{rangeOmegaMMCMC}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{maxOmegaMMCMC}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{minOmegaMMCMC}
+\PY{n}{rangeOmegaDEMCMC}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{maxOmegaDEMCMC}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{minOmegaDEMCMC}
+
+\PY{n}{histogramValues}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{zeros}\PY{p}{(}\PY{n}{n\PYZus{}ombins}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{,}\PY{+w}{ }\PY{n}{n\PYZus{}odebins}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{)}
+\PY{k}{for}\PY{+w}{ }\PY{n}{i}\PY{+w}{ }\PY{k}{in}\PY{+w}{ }\PY{l+m+mi}{1}\PY{o}{:}\PY{n}{size}\PY{p}{(}\PY{n}{OmegaDEMCMC}\PY{p}{)}\PY{p}{[}\PY{k}{begin}\PY{p}{]}
+\PY{+w}{    }\PY{n}{histogramValues}\PY{p}{[}\PY{n}{trunc}\PY{p}{(}\PY{k+kt}{Int}\PY{p}{,}\PY{+w}{ }\PY{p}{(}\PY{n}{OmegaMMCMC}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{minOmegaMMCMC}\PY{p}{)}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{n}{n\PYZus{}ombins}\PY{+w}{ }\PY{o}{/}\PY{+w}{ }\PY{p}{(}\PY{n}{rangeOmegaMMCMC}\PY{p}{)}\PY{p}{)}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{,}\PY{+w}{ }\PY{n}{trunc}\PY{p}{(}\PY{k+kt}{Int}\PY{p}{,}\PY{+w}{ }\PY{p}{(}\PY{n}{OmegaDEMCMC}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{minOmegaDEMCMC}\PY{p}{)}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{n}{n\PYZus{}odebins}\PY{+w}{ }\PY{o}{/}\PY{+w}{ }\PY{n}{rangeOmegaDEMCMC}\PY{p}{)}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{]}\PY{+w}{ }\PY{o}{+=}\PY{+w}{ }\PY{l+m+mi}{1}
+\PY{c}{\PYZsh{}\PYZsh{} I was doing to more manually, which is probably correct, but very slow.}
+\PY{c}{\PYZsh{}    for j in 1:(n\PYZus{}ombins \PYZhy{} 1)}
+\PY{c}{\PYZsh{}        for k in 1:(n\PYZus{}odebins \PYZhy{} 1)}
+\PY{c}{\PYZsh{}            histogramValues[j, k] += (om\PYZus{}gridMCMC[j] \PYZlt{}= OmegaMMCMC[i] \PYZam{}\PYZam{} OmegaMMCMC[i] \PYZlt{}= om\PYZus{}gridMCMC[j + 1] \PYZam{}\PYZam{} ode\PYZus{}gridMCMC[k] \PYZlt{}= OmegaDEMCMC[i] \PYZam{}\PYZam{} OmegaDEMCMC[i] \PYZlt{}= ode\PYZus{}gridMCMC[k + 1])}
+\PY{c}{\PYZsh{}        end}
+\PY{c}{\PYZsh{}    end}
+\PY{k}{end}
+\PY{n}{histogramValues}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Next I just call the contour plot function on the histogram matrix.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{f}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Figure}\PY{p}{(}\PY{p}{)}
+\PY{n}{Axis}\PY{p}{(}\PY{n}{f}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{contour!}\PY{p}{(}\PY{n}{om\PYZus{}gridMCMC}\PY{p}{,}\PY{+w}{ }\PY{n}{ode\PYZus{}gridMCMC}\PY{p}{,}\PY{+w}{ }\PY{n}{histogramValues}\PY{p}{)}
+
+\PY{n}{save}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{MyHistogram.png}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{f}\PY{p}{)}
+
+\PY{n}{display}\PY{p}{(}\PY{n}{f}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+      
+      \includegraphics[]{MyHistogram.png}
+    \end{center}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Bonito.App(Bonito.var"\#8\#14"\{WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}\}(WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}(WGLMakie.Screen(
+    framerate = 30.0,
+    resize\_to = nothing,
+    px\_per\_unit = automatic,
+    scalefactor = automatic,
+    session = nothing,
+    three = Channel\{Bool\}(1) (empty),
+    scene = Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px),
+), Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px))), Base.RefValue\{Union\{Nothing, Bonito.Session\}\}(nothing), "Bonito App", false)
+    \end{Verbatim}
+
+    
+    
+    
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+WGLMakie.Screen(
+    framerate = 30.0,
+    resize\_to = nothing,
+    px\_per\_unit = automatic,
+    scalefactor = automatic,
+    session = true,
+    three = Channel\{Bool\}(1) (1 item available),
+    scene = Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px),
+)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{p}{]}\PY{+w}{ }\PY{n}{add}\PY{+w}{ }\PY{n}{FHist}\PY{+w}{ }\PY{n}{AffineInvariantMCMC}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{ansi-green-intense}{\textbf{   Resolving}} package versions{\ldots}
+\textcolor{ansi-green-intense}{\textbf{  No Changes}} to `\textasciitilde{}/.julia/environments/v1.10/Project.toml`
+\textcolor{ansi-green-intense}{\textbf{  No Changes}} to `\textasciitilde{}/.julia/environments/v1.10/Manifest.toml`
+    \end{Verbatim}
+
+    Here I tested the FHist package that was mentioned in the lectures.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{using}\PY{+w}{ }\PY{n}{FHist}
+
+\PY{n}{h}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{FHist}\PY{o}{.}\PY{n}{Hist2D}\PY{p}{(}\PY{p}{(}\PY{n}{chain}\PY{p}{[}\PY{o}{:}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{chain}\PY{p}{[}\PY{o}{:}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}\PY{p}{;}\PY{+w}{ }\PY{n}{nbins}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{,}\PY{l+m+mi}{100}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{counts}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{bincounts}\PY{p}{(}\PY{n}{h}\PY{p}{)}\PY{p}{;}
+\PY{n}{xc}\PY{p}{,}\PY{n}{yc}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{bincenters}\PY{p}{(}\PY{n}{h}\PY{p}{)}\PY{p}{;}
+
+\PY{n}{f}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Figure}\PY{p}{(}\PY{p}{)}
+\PY{n}{Axis}\PY{p}{(}\PY{n}{f}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{contour!}\PY{p}{(}\PY{n}{xc}\PY{p}{,}\PY{+w}{ }\PY{n}{yc}\PY{p}{,}\PY{+w}{ }\PY{n}{counts}\PY{p}{)}\PY{+w}{ }\PY{c}{\PYZsh{}, levels=[10,50,100])}
+\PY{c}{\PYZsh{}really small/many bins make this contour plot really jaggered}
+
+\PY{n}{save}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{MyFirstJaggeredContour.png}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{f}\PY{p}{)}
+\PY{n}{f}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+      
+      \includegraphics[]{MyFirstJaggeredContour.png}
+    \end{center}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Bonito.App(Bonito.var"\#8\#14"\{WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}\}(WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}(WGLMakie.Screen(
+    framerate = 30.0,
+    resize\_to = nothing,
+    px\_per\_unit = automatic,
+    scalefactor = automatic,
+    session = nothing,
+    three = Channel\{Bool\}(1) (empty),
+    scene = Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px),
+), Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px))), Base.RefValue\{Union\{Nothing, Bonito.Session\}\}(nothing), "Bonito App", false)
+    \end{Verbatim}
+
+    
+    Doing this with fewer bigger bins makes the contours smoother, similar
+to my manual way. FHist seems to be binning data slightly differently to
+me\ldots{}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{h}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{FHist}\PY{o}{.}\PY{n}{Hist2D}\PY{p}{(}\PY{p}{(}\PY{n}{chain}\PY{p}{[}\PY{o}{:}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{chain}\PY{p}{[}\PY{o}{:}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}\PY{p}{;}\PY{+w}{ }\PY{n}{nbins}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{20}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{counts}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{bincounts}\PY{p}{(}\PY{n}{h}\PY{p}{)}\PY{p}{;}
+\PY{n}{xc}\PY{p}{,}\PY{n}{yc}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{bincenters}\PY{p}{(}\PY{n}{h}\PY{p}{)}\PY{p}{;}
+
+\PY{n}{f}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Figure}\PY{p}{(}\PY{p}{)}
+\PY{n}{Axis}\PY{p}{(}\PY{n}{f}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{contour!}\PY{p}{(}\PY{n}{xc}\PY{p}{,}\PY{+w}{ }\PY{n}{yc}\PY{p}{,}\PY{+w}{ }\PY{n}{counts}\PY{p}{)}\PY{c}{\PYZsh{}, levels=[10,50,100])}
+
+\PY{n}{save}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{SmallerBinsCountour.png}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{f}\PY{p}{)}
+\PY{n}{f}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+      
+      \includegraphics[]{SmallerBinsCountour.png}
+    \end{center}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Bonito.App(Bonito.var"\#8\#14"\{WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}\}(WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}(WGLMakie.Screen(
+    framerate = 30.0,
+    resize\_to = nothing,
+    px\_per\_unit = automatic,
+    scalefactor = automatic,
+    session = nothing,
+    three = Channel\{Bool\}(1) (empty),
+    scene = Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px),
+), Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px))), Base.RefValue\{Union\{Nothing, Bonito.Session\}\}(nothing), "Bonito App", false)
+    \end{Verbatim}
+
+    
+    Doing samples with the Affine MCMC method mentioned in the lectures.
+``Self-tunes parameters''.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{using}\PY{+w}{ }\PY{n}{AffineInvariantMCMC}
+
+\PY{n}{numdims}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m+mi}{3}
+\PY{n}{numwalkers}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m+mi}{50}
+\PY{n}{thinning}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m+mi}{10}
+\PY{n}{numsamples\PYZus{}perwalker}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m+mi}{15000}
+\PY{n}{burnin}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{l+m+mi}{5000}
+
+\PY{c}{\PYZsh{} Start out by doing a \PYZdq{}burn\PYZhy{}in\PYZdq{} short run...}
+\PY{n}{initial}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{p}{[}\PY{n}{abs\PYZus{}mag}\PY{p}{,}\PY{+w}{ }\PY{l+m+mf}{0.5}\PY{p}{,}\PY{+w}{ }\PY{l+m+mf}{0.5}\PY{p}{]}\PY{+w}{ }\PY{o}{.+}\PY{+w}{ }\PY{n}{randn}\PY{p}{(}\PY{n}{numdims}\PY{p}{,}\PY{+w}{ }\PY{n}{numwalkers}\PY{p}{)}\PY{o}{*}\PY{l+m+mf}{0.01}
+\PY{n}{chain}\PY{p}{,}\PY{+w}{ }\PY{n}{ll}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{AffineInvariantMCMC}\PY{o}{.}\PY{n}{sample}\PY{p}{(}\PY{+w}{ }\PY{n}{p}\PY{+w}{ }\PY{o}{\PYZhy{}\PYZgt{}}\PY{+w}{ }
+\PY{+w}{        }\PY{k}{try}
+\PY{+w}{            }\PY{n}{supernova\PYZus{}log\PYZus{}likelihood}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{z}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{mag}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{sigma\PYZus{}mag}\PY{p}{,}\PY{+w}{ }\PY{n}{p}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{p}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{p}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}
+\PY{+w}{        }\PY{k}{catch}\PY{+w}{ }\PY{n}{err}
+\PY{+w}{            }\PY{o}{\PYZhy{}}\PY{n+nb}{Inf}
+\PY{+w}{        }\PY{k}{end}\PY{p}{,}\PY{+w}{ }\PY{n}{numwalkers}\PY{p}{,}\PY{+w}{ }\PY{n}{initial}\PY{p}{,}\PY{+w}{ }\PY{n}{burnin}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{)}
+
+\PY{c}{\PYZsh{} Then start the \PYZdq{}main\PYZdq{} run where the burn\PYZhy{}in finished:}
+\PY{n}{initial}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{chain}\PY{p}{[}\PY{o}{:}\PY{p}{,}\PY{o}{:}\PY{p}{,}\PY{k}{end}\PY{p}{]}
+\PY{n}{chain}\PY{p}{,}\PY{+w}{ }\PY{n}{ll}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{AffineInvariantMCMC}\PY{o}{.}\PY{n}{sample}\PY{p}{(}\PY{+w}{ }
+\PY{+w}{   }\PY{n}{p}\PY{+w}{ }\PY{o}{\PYZhy{}\PYZgt{}}\PY{+w}{ }
+\PY{+w}{        }\PY{k}{try}
+\PY{+w}{            }\PY{n}{supernova\PYZus{}log\PYZus{}likelihood}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{z}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{mag}\PY{p}{,}\PY{+w}{ }\PY{n}{data}\PY{o}{.}\PY{n}{sigma\PYZus{}mag}\PY{p}{,}\PY{+w}{ }\PY{n}{p}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{p}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{p}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}
+\PY{+w}{        }\PY{k}{catch}\PY{+w}{ }\PY{n}{err}
+\PY{+w}{            }\PY{o}{\PYZhy{}}\PY{n+nb}{Inf}
+\PY{+w}{        }\PY{k}{end}
+\PY{+w}{    }\PY{p}{,}\PY{+w}{ }\PY{n}{numwalkers}\PY{p}{,}\PY{+w}{ }\PY{n}{initial}\PY{p}{,}\PY{+w}{ }\PY{n}{numsamples\PYZus{}perwalker}\PY{p}{,}\PY{+w}{ }\PY{n}{thinning}\PY{p}{)}
+\PY{n}{flatchain}\PY{p}{,}\PY{+w}{ }\PY{n}{flatllhoodvals}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{AffineInvariantMCMC}\PY{o}{.}\PY{+w}{ }\PY{n}{flattenmcmcarray}\PY{p}{(}\PY{n}{chain}\PY{p}{,}\PY{+w}{ }\PY{n}{ll}\PY{p}{)}\PY{p}{;}
+
+\PY{c}{\PYZsh{} This \PYZdq{}flatchain\PYZdq{} is transposed from the way we produced it in our code, so you can do}
+
+\PY{n}{chain}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{flatchain}\PY{o}{\PYZsq{}}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{ansi-green}{Progress: 100\%|█████████████████████████████████████████| Time:
+0:00:12}
+    \end{Verbatim}
+
+    The affine MCMC doesn't seem to give perfect sampling, some samples seem
+to be out of the main distribution, even starting on the main
+distribution, but does an amazing job considering the lack of needing to
+tune jump size parameters.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{cplot2}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{cornerplot}\PY{p}{(}\PY{n}{chain}\PY{p}{,}\PY{+w}{ }\PY{p}{[}\PY{l+s}{\PYZdq{}}\PY{l+s}{M}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{l+s}{\PYZdq{}}\PY{l+s}{Omega\PYZus{}M}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{l+s}{\PYZdq{}}\PY{l+s}{Omega\PYZus{}DE}\PY{l+s}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{save}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{AffineMCMCCPlot.png}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{cplot2}\PY{p}{)}
+\PY{n}{cplot2}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+      
+      \includegraphics[]{AffineMCMCCPlot.png}
+    \end{center}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Bonito.App(Bonito.var"\#8\#14"\{WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}\}(WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}(WGLMakie.Screen(
+    framerate = 30.0,
+    resize\_to = nothing,
+    px\_per\_unit = automatic,
+    scalefactor = automatic,
+    session = nothing,
+    three = Channel\{Bool\}(1) (empty),
+    scene = Scene (600px, 600px):
+  0 Plots
+  6 Child Scenes:
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    └ Scene (600px, 600px),
+), Scene (600px, 600px):
+  0 Plots
+  6 Child Scenes:
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    ├ Scene (600px, 600px)
+    └ Scene (600px, 600px))), Base.RefValue\{Union\{Nothing, Bonito.Session\}\}(nothing), "Bonito App", false)
+    \end{Verbatim}
+
+    
+    Now I plot these contours, pretty smooth :)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{h}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{FHist}\PY{o}{.}\PY{n}{Hist2D}\PY{p}{(}\PY{p}{(}\PY{n}{chain}\PY{p}{[}\PY{o}{:}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{chain}\PY{p}{[}\PY{o}{:}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}\PY{p}{;}\PY{+w}{ }\PY{n}{nbins}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{20}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{counts}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{bincounts}\PY{p}{(}\PY{n}{h}\PY{p}{)}\PY{p}{;}
+\PY{n}{xc}\PY{p}{,}\PY{n}{yc}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{bincenters}\PY{p}{(}\PY{n}{h}\PY{p}{)}\PY{p}{;}
+
+\PY{n}{f}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Figure}\PY{p}{(}\PY{p}{)}
+\PY{n}{Axis}\PY{p}{(}\PY{n}{f}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{contour!}\PY{p}{(}\PY{n}{xc}\PY{p}{,}\PY{+w}{ }\PY{n}{yc}\PY{p}{,}\PY{+w}{ }\PY{n}{counts}\PY{p}{)}\PY{c}{\PYZsh{}, levels=[10,50,100])}
+
+\PY{n}{save}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{AffineMCMCContour.png}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{f}\PY{p}{)}
+\PY{n}{f}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+      \includegraphics[]{AffineMCMCContour.png}
+    \end{center}
+
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Bonito.App(Bonito.var"\#8\#14"\{WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}\}(WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}(WGLMakie.Screen(
+    framerate = 30.0,
+    resize\_to = nothing,
+    px\_per\_unit = automatic,
+    scalefactor = automatic,
+    session = nothing,
+    three = Channel\{Bool\}(1) (empty),
+    scene = Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px),
+), Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px))), Base.RefValue\{Union\{Nothing, Bonito.Session\}\}(nothing), "Bonito App", false)
+    \end{Verbatim}
+
+    
+    This contour looks much smoother now
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{h}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{FHist}\PY{o}{.}\PY{n}{Hist2D}\PY{p}{(}\PY{p}{(}\PY{n}{chain}\PY{p}{[}\PY{o}{:}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}\PY{+w}{ }\PY{n}{chain}\PY{p}{[}\PY{o}{:}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}\PY{p}{;}\PY{+w}{ }\PY{n}{nbins}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{,}\PY{l+m+mi}{100}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{counts}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{bincounts}\PY{p}{(}\PY{n}{h}\PY{p}{)}\PY{p}{;}
+\PY{n}{xc}\PY{p}{,}\PY{n}{yc}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{bincenters}\PY{p}{(}\PY{n}{h}\PY{p}{)}\PY{p}{;}
+
+\PY{n}{f}\PY{+w}{ }\PY{o}{=}\PY{+w}{ }\PY{n}{Figure}\PY{p}{(}\PY{p}{)}
+\PY{n}{Axis}\PY{p}{(}\PY{n}{f}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{contour!}\PY{p}{(}\PY{n}{xc}\PY{p}{,}\PY{+w}{ }\PY{n}{yc}\PY{p}{,}\PY{+w}{ }\PY{n}{counts}\PY{p}{)}\PY{+w}{ }\PY{c}{\PYZsh{}, levels=[10,50,100])}
+
+\PY{n}{save}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{finalsmoothcountour.png}\PY{l+s}{\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n}{f}\PY{p}{)}
+\PY{n}{f}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+      \includegraphics[]{finalsmoothcountour.png}
+    \end{center}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Bonito.App(Bonito.var"\#8\#14"\{WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}\}(WGLMakie.var"\#20\#21"\{WGLMakie.Screen, Scene\}(WGLMakie.Screen(
+    framerate = 30.0,
+    resize\_to = nothing,
+    px\_per\_unit = automatic,
+    scalefactor = automatic,
+    session = nothing,
+    three = Channel\{Bool\}(1) (empty),
+    scene = Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px),
+), Scene (600px, 450px):
+  0 Plots
+  1 Child Scene:
+    └ Scene (600px, 450px))), Base.RefValue\{Union\{Nothing, Bonito.Session\}\}(nothing), "Bonito App", false)
+    \end{Verbatim}
+
+    
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
